@@ -15,6 +15,7 @@ export default function TopicBreakdown({ topics }) {
   return (
     <div className="
       w-full
+      h-full
       bg-white/5
       backdrop-blur-md
       border border-white/10
@@ -38,7 +39,7 @@ export default function TopicBreakdown({ topics }) {
         </p>
       ) : (
 
-        <div className="space-y-4">
+        <div className="flex justify-between flex-col gap-10">
 
           {Object.entries(topics).map(([topic, score]) => (
             <div key={topic}>

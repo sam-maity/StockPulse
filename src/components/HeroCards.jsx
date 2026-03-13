@@ -23,7 +23,7 @@ hover:border-purple-500/40
 transition
 rounded-3xl
 p-14
-min-h-[420px]
+min-h-105
 flex flex-col
 items-start
 text-left
@@ -66,7 +66,7 @@ hover:border-purple-500/40
 transition
 rounded-3xl
 p-14
-min-h-[420px]
+min-h-105
 flex flex-col
 items-start
 text-left
@@ -109,7 +109,7 @@ hover:border-purple-500/40
 transition
 rounded-3xl
 p-14
-min-h-[420px]
+min-h-105
 flex flex-col
 items-start
 text-left

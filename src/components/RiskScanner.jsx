@@ -6,6 +6,7 @@ export default function RiskScanner({ risks, onClick }) {
     <div
       className="
         w-full
+        h-full
         bg-white/5
         backdrop-blur-md
         border border-white/10
@@ -14,6 +15,7 @@ export default function RiskScanner({ risks, onClick }) {
         text-white
         transition
         hover:border-purple-500/30
+        cursor-pointer
       "
     >
 
@@ -21,21 +23,22 @@ export default function RiskScanner({ risks, onClick }) {
         <h2 className="text-sm tracking-widest uppercase text-purple-400 font-semibold">
           Risk Scanner
         </h2>
-        <div className="h-[1px] flex-1 ml-4 bg-gradient-to-r from-purple-500/40 to-transparent"></div>
+        <div className="h-px flex-1 ml-4 bg-linear-to-r from-purple-500/40 to-transparent"></div>
       </div>
 
       {hasRisks ? (
         <>
-          <p className="text-red-400 text-sm mb-4">
-            Risk-related language detected in recent headlines
-          </p>
+          <div className="flex flex-col justify-center">
+            <p className="text-red-400 text-sm mb-4">
+              Risk-related language detected in recent headlines
+            </p>
 
-          <div className="flex flex-wrap gap-2">
+            <div className="flex flex-wrap gap-10 items-center">
 
-            {Object.entries(risks).map(([word, count]) => (
-              <span
-                key={word}
-                className="
+              {Object.entries(risks).map(([word, count]) => (
+                <span
+                  key={word}
+                  className="
                   bg-red-500/10
                   border border-red-500/30
                   text-red-300
@@ -44,11 +47,12 @@ export default function RiskScanner({ risks, onClick }) {
                   rounded-full
                   tracking-wide
                 "
-              >
-                {word} ×{count}
-              </span>
-            ))}
+                >
+                  {word} ×{count}
+                </span>
+              ))}
 
+            </div>
           </div>
         </>
       ) : (
@@ -74,7 +78,7 @@ export default function RiskScanner({ risks, onClick }) {
       )}
       <button
         onClick={onClick}
-        className="mt-4 w-full py-2 text-xs font-orbitron tracking-widest text-cyan-500/60 border border-cyan-500/10 rounded-lg hover:border-cyan-500/30 hover:text-cyan-400 hover:bg-cyan-500/5 transition-all"
+        className="mt-4 w-full py-2 text-xs font-orbitron tracking-widest text-cyan-500/60 border border-cyan-500/10 rounded-lg hover:border-cyan-500/30 hover:text-cyan-400 hover:bg-cyan-500/5 transition-all cursor-pointer"
       >
         VIEW DEEP ANALYSIS →
       </button>

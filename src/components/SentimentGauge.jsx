@@ -24,6 +24,8 @@ export default function SentimentGauge({ data, onClick }) {
     <div
       className="
         w-full
+        cursor-pointer
+        h-full
         bg-white/5
         backdrop-blur-md
         border border-white/10
@@ -121,7 +123,7 @@ export default function SentimentGauge({ data, onClick }) {
       </div>
       <button
         onClick={onClick}
-        className="mt-4 w-full py-2 text-xs font-orbitron tracking-widest text-cyan-500/60 border border-cyan-500/10 rounded-lg hover:border-cyan-500/30 hover:text-cyan-400 hover:bg-cyan-500/5 transition-all"
+        className="mt-4 w-full py-2 text-xs font-orbitron tracking-widest text-cyan-500/60 border border-cyan-500/10 rounded-lg hover:border-cyan-500/30 hover:text-cyan-400 hover:bg-cyan-500/5 transition-all cursor-pointer"
       >
         VIEW DEEP ANALYSIS →
       </button>

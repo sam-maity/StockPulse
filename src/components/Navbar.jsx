@@ -40,7 +40,7 @@ const Navbar = ({ onAnalyze }) => {
         {/* LOGO */}
         <div className="flex items-center gap-3 flex-1">
 
-          <span className="font-orbitron text-white text-xl tracking-widest hidden sm:block">
+          <span className="font-[Poiret-One] text-white text-xl tracking-widest hidden sm:block">
             STOCKPULSE
           </span>
 

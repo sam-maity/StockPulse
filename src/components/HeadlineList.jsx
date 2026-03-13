@@ -44,11 +44,11 @@ export default function HeadlineList({ headlines }) {
             `}
           >
 
-            <p className="text-sm text-zinc-200 mb-3 leading-relaxed">
+            <p className="text-sm text-zinc-200 mb-3 leading-relaxed cursor-pointer">
               {h.headline}
             </p>
 
-            <div className="flex flex-wrap gap-2 items-center">
+            <div className="flex flex-wrap gap-2 items-center cursor-pointer">
 
               <span className={`text-xs font-semibold uppercase tracking-wide ${labelColor[h.label]}`}>
                 {h.label}
