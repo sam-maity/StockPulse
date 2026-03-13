@@ -151,13 +151,7 @@ def get_price_change_pct(ticker: str, period: str = "5d") -> float:
     return round((end - start) / start * 100, 2)
 
 
-def get_headlines(ticker: str, limit: int = 15) -> list[str]:
-    company = (
-        ticker
-        .replace(".NS", "")
-        .replace(".BO", "")
-        .replace("-", " ")
-    )
+def get_headlines(ticker: str, limit: int = 15):
 
     stock = yf.Ticker(ticker)
 
@@ -166,24 +160,32 @@ def get_headlines(ticker: str, limit: int = 15) -> list[str]:
     except Exception:
         news = []
 
-    # Use helper to handle both old and new yfinance news structures
-    titles = [_extract_title(n) for n in news if _extract_title(n)]
-    titles = [t for t in titles if len(t) > 10]  # filter junk/empty titles
+    headlines = []
 
-    # Fallback only if truly no news found
-    if not titles:
-        titles = [
-            f"{company} reports quarterly earnings results",
-            f"{company} stock movement amid market volatility",
-            f"Investors watch {company} amid sector rotation",
-            f"{company} management outlines strategic roadmap",
-            f"{company} navigates competition in core markets",
-            f"{company} revenue growth trajectory under focus",
-            f"Analysts revise {company} price target",
-            f"{company} expands into adjacent business segments",
-        ]
+    for item in news[:limit]:
 
-    return titles[:limit]
+        content = item.get("content", {})
+
+        title = content.get("title") or item.get("title")
+
+        url = (
+            content.get("canonicalUrl", {}).get("url")
+            or content.get("clickThroughUrl", {}).get("url")
+            or item.get("link")
+        )
+
+        source = content.get("provider", {}).get("displayName")
+
+        if not title:
+            continue
+
+        headlines.append({
+            "title": title,
+            "url": url,
+            "source": source
+        })
+
+    return headlines
 def get_price_history(ticker: str):
 
     stock = yf.Ticker(ticker)

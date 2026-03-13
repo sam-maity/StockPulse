@@ -13,18 +13,7 @@ export default function HeadlineList({ headlines }) {
   }
 
   return (
-    <div
-      className="
-        bg-white/5
-        backdrop-blur-md
-        border border-white/10
-        rounded-xl
-        p-6
-        text-white
-        transition
-        hover:border-purple-500/30
-      "
-    >
+    <div className="bg-white/5 backdrop-blur-md border border-white/10 rounded-xl p-6 text-white transition hover:border-purple-500/30">
 
       <div className="flex items-center justify-between mb-5">
         <h2 className="text-sm tracking-widest uppercase text-purple-400 font-semibold">
@@ -36,19 +25,19 @@ export default function HeadlineList({ headlines }) {
       <div className="space-y-3">
 
         {headlines.map((h, i) => (
-          <div
+          <a
             key={i}
-            className={`
-              border rounded-xl p-4
-              ${bgMap[h.label]}
-            `}
+            href={h.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className={`block border rounded-xl p-4 hover:bg-white/5 transition ${bgMap[h.label]}`}
           >
 
-            <p className="text-sm text-zinc-200 mb-3 leading-relaxed cursor-pointer">
-              {h.headline}
+            <p className="text-sm text-zinc-200 mb-3 leading-relaxed">
+              {h.title || h.headline}
             </p>
 
-            <div className="flex flex-wrap gap-2 items-center cursor-pointer">
+            <div className="flex flex-wrap gap-2 items-center">
 
               <span className={`text-xs font-semibold uppercase tracking-wide ${labelColor[h.label]}`}>
                 {h.label}
@@ -58,48 +47,28 @@ export default function HeadlineList({ headlines }) {
                 {(h.confidence * 100).toFixed(0)}% confidence
               </span>
 
-              {h.risk_flags.length > 0 && (
-                <span
-                  className="
-                    text-xs
-                    bg-red-500/10
-                    border border-red-500/30
-                    text-red-300
-                    px-2 py-0.5
-                    rounded-full
-                  "
-                >
+              {h.source && (
+                <span className="text-xs text-zinc-500">
+                  {h.source}
+                </span>
+              )}
+
+              {h.risk_flags?.length > 0 && (
+                <span className="text-xs bg-red-500/10 border border-red-500/30 text-red-300 px-2 py-0.5 rounded-full">
                   risk: {h.risk_flags.join(", ")}
                 </span>
               )}
 
               {h.hype_score > 0 && (
-                <span
-                  className="
-                    text-xs
-                    bg-orange-500/10
-                    border border-orange-500/30
-                    text-orange-300
-                    px-2 py-0.5
-                    rounded-full
-                  "
-                >
+                <span className="text-xs bg-orange-500/10 border border-orange-500/30 text-orange-300 px-2 py-0.5 rounded-full">
                   hype signal
                 </span>
               )}
 
-              {h.topics.map((t) => (
+              {h.topics?.map((t) => (
                 <span
                   key={t}
-                  className="
-                    text-xs
-                    bg-purple-500/10
-                    border border-purple-500/30
-                    text-purple-300
-                    px-2 py-0.5
-                    rounded-full
-                    capitalize
-                  "
+                  className="text-xs bg-purple-500/10 border border-purple-500/30 text-purple-300 px-2 py-0.5 rounded-full capitalize"
                 >
                   {t}
                 </span>
@@ -107,7 +76,7 @@ export default function HeadlineList({ headlines }) {
 
             </div>
 
-          </div>
+          </a>
         ))}
 
       </div>
