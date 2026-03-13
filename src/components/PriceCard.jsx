@@ -58,7 +58,6 @@ export default function PriceCard({ data, onClick }) {
       {/* Moving Averages */}
       <div className="grid grid-cols-2 gap-4 mb-6">
 
-<<<<<<< main
         <div className="bg-white/5 border border-white/10 rounded-lg p-4 text-center">
           <p className="text-[11px] text-zinc-400 uppercase tracking-wide mb-1">
             20 Day MA
@@ -83,23 +82,6 @@ export default function PriceCard({ data, onClick }) {
       <div className="mb-6">
         <PriceChart history={history} />
       </div>
-=======
-            <div className="grid grid-cols-2 gap-4">
-                <div className="bg-white/5 border border-white/10 rounded-lg p-4 text-center">
-                    <p className="text-[11px] text-zinc-400 uppercase tracking-wide mb-1">20 Day MA</p>
-                    <p className="font-semibold text-lg">
-                        {data.ma20 ? `${currency}${data.ma20.toFixed(2)}` : "N/A"}
-                    </p>
-                </div>
-
-                <div className="bg-white/5 border border-white/10 rounded-lg p-4 text-center">
-                    <p className="text-[11px] text-zinc-400 uppercase tracking-wide mb-1">50 Day MA</p>
-                    <p className="font-semibold text-lg">
-                        {data.ma50 ? `${currency}${data.ma50.toFixed(2)}` : "N/A"}
-                    </p>
-                </div>
-            </div>
->>>>>>> main
 
             <button
                 onClick={onClick}

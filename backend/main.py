@@ -4,14 +4,18 @@ import yfinance as yf
 from analytics import get_market_status
 from models import FinbertDashboardOut
 from finbert import analyze_headlines, aggregate
-from stock import get_price_data, get_price_change_pct, get_headlines, POPULAR_STOCKS
+from stock import get_price_data, get_price_change_pct, get_headlines, POPULAR_STOCKS, get_price_history
 from analytics import sentiment_price_divergence
 
 app = FastAPI(title="StockPulse API")
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173"],
+    allow_origins=[
+        "http://localhost:5173",
+        "http://127.0.0.1:5173"
+    ],
+    allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
