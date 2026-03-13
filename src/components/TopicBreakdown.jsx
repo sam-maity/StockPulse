@@ -28,7 +28,7 @@ export default function TopicBreakdown({ topics }) {
 
       <div className="flex items-center justify-between mb-5">
         <h2 className="text-sm tracking-widest uppercase text-purple-400 font-semibold">
-          Sentiment Drivers
+          Sentiment Drivers*
         </h2>
         <div className="h-[1px] flex-1 ml-4 bg-gradient-to-r from-purple-500/40 to-transparent"></div>
       </div>

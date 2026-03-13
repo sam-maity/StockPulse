@@ -137,7 +137,7 @@ const Navbar = ({ onAnalyze }) => {
                     onChange={(e) => handleInput(e.target.value)}
                     autoFocus
                     onKeyDown={(e) => {
-                      if (e.key === "Enter") handleSearch()
+                      if (e.key === "Enter") { handleSearch(), setSearchOpen(false) }
                       if (e.key === "Escape") setSearchOpen(false)
                     }}
                     placeholder="Search company or ticker..."
@@ -152,7 +152,10 @@ const Navbar = ({ onAnalyze }) => {
 
                 {/* RUN BUTTON */}
                 <button
-                  onClick={handleSearch}
+                  onClick={() => {
+                    handleSearch()
+                    setSearchOpen(false)
+                  }}
                   className="cursor-pointer px-4 py-2.5 text-xs font-orbitron tracking-wider border border-cyan-500/50 rounded-xl bg-cyan-500/10 text-cyan-400 hover:bg-cyan-500/20 hover:border-cyan-400 transition-all whitespace-nowrap"
                 >
                   RUN
@@ -180,7 +183,10 @@ const Navbar = ({ onAnalyze }) => {
                         return (
                           <div
                             key={i}
-                            onClick={() => handleSelect(item.symbol)}
+                            onClick={() => {
+                              handleSelect(item.symbol)
+                              setSearchOpen(false)
+                            }}
                             className="flex justify-between items-center px-4 py-3 hover:bg-zinc-900/80 cursor-pointer transition-colors border-b border-zinc-900/50 last:border-0 group"
                           >
                             <div className="min-w-0">
@@ -210,15 +216,15 @@ const Navbar = ({ onAnalyze }) => {
 
         </div>
 
-      </div>
+      </div >
 
       {/* bottom glow */}
-      <div className="h-px bg-linear-to-r from-transparent via-cyan-500/20 to-transparent" />
+      < div className="h-px bg-linear-to-r from-transparent via-cyan-500/20 to-transparent" />
 
       {/* CATEGORIES PANEL */}
-      <Categories isOpen={menuOpen}
+      < Categories isOpen={menuOpen}
         onClose={() => setMenuOpen(false)}
-        onAnalyze={handleSelect} />  {/* 👈 */}
+        onAnalyze={handleSelect} /> {/* 👈 */}
     </>
   )
 }

@@ -100,30 +100,53 @@ def compute_hype(headlines: list[str]) -> tuple[float, str]:
 
 # ── Headline analysis ─────────────────────────────────────────────────────────
 
-def analyze_headlines(headlines: list[str]) -> list[dict]:
+def analyze_headlines(headlines: list) -> list[dict]:
     if not headlines:
         return []
 
-    results  = finbert(headlines)
     enriched = []
 
-    for text, r in zip(headlines, results):
+    texts = []
+    urls  = []
+
+    for h in headlines:
+        if isinstance(h, dict):
+            text = h.get("title") or h.get("headline") or ""
+            url  = (
+                h.get("url")
+                or h.get("link")
+                or h.get("article_url")
+                or h.get("news_url")
+                or (h.get("source") or {}).get("url")
+                or ""
+            )
+        else:
+            text = str(h)
+            url  = ""
+
+        texts.append(text)
+        urls.append(url)
+
+    results = finbert(texts)
+
+    for text, url, r in zip(texts, urls, results):
         label = r["label"].lower()
         conf  = float(r["score"])
         score = LABEL_TO_SCORE.get(label, 0)
 
         enriched.append({
-            "headline":   text,
-            "label":      label,
+            "title": text,
+            "headline": text,
+            "url": url,
+            "label": label,
             "confidence": conf,
-            "score":      score,
-            "topics":     classify_topics(text),
+            "score": score,
+            "topics": classify_topics(text),
             "hype_score": get_hype_score(text),
             "risk_flags": get_risk_flags(text),
         })
 
     return enriched
-
 
 # ── Aggregation ───────────────────────────────────────────────────────────────
 

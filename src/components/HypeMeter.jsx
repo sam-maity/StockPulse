@@ -37,7 +37,7 @@ export default function HypeMeter({ hypeLevel, hypeRatio, onClick }) {
       {/* Header */}
       <div className="flex items-center justify-between mb-5">
         <h2 className="text-sm tracking-widest uppercase text-purple-400 font-semibold">
-          Hype Analysis
+          Hype Analysis*
         </h2>
         <div className="h-px flex-1 ml-4 bg-gradient-to-r from-purple-500/40 to-transparent" />
       </div>

@@ -52,7 +52,7 @@ function App() {
     }
 
     return (
-        <div className="min-h-screen bg-[#050505] text-white relative overflow-hidden">
+        <div className="min-h-screen bg-[#050505] text-white relative">
 
             {/* Ambient lighting */}
             <div className="fixed inset-0 pointer-events-none">
@@ -174,7 +174,7 @@ function App() {
                                 variants={card}
                             >
                                 <p className="text-yellow-300/70 text-xs font-orbitron tracking-wider">
-                                    EDUCATIONAL TOOL ONLY - NOT FINANCIAL ADVICE - ALWAYS DO YOUR OWN RESEARCH
+                                    *EDUCATIONAL TOOL ONLY - NOT FINANCIAL ADVICE - ALWAYS DO YOUR OWN RESEARCH
                                 </p>
                             </motion.div>
 

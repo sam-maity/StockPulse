@@ -9,6 +9,7 @@ class HeadlineDetail(BaseModel):
     topics: List[str]
     hype_score: int
     risk_flags: List[str]
+    url: Optional[str] = None
 
     title: Optional[str] = None
     url: Optional[str] = None

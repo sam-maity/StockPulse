@@ -13,7 +13,7 @@ export default function DivergenceInsight({ comment,onClick }) {
 
       <div className="flex items-center justify-between mb-3">
         <h2 className="text-sm tracking-widest uppercase text-purple-400 font-semibold">
-          AI Divergence Insight
+          AI Divergence Insight*
         </h2>
 
         <div className="h-px flex-1 ml-4 bg-linear-to-r from-purple-500/40 to-transparent"></div>
