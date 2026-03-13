@@ -1,7 +1,7 @@
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 import yfinance as yf
-
+from stock import get_price_history
 from analytics import get_market_status
 from models import FinbertDashboardOut
 from finbert import analyze_headlines, aggregate
@@ -76,7 +76,7 @@ def finbert_dashboard(ticker: str):
 
         news_warning = None
         if headline_count < 5:
-            news_warning = "Low news volume — sentiment may be unreliable."
+            news_warning = "Low news volume. Sentiment may be unreliable."
 
         enriched = analyze_headlines(headlines)
         agg = aggregate(enriched)

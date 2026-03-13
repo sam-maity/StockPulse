@@ -134,6 +134,6 @@ def get_market_status():
             us_open = True
 
     return {
-        "nse": "OPEN" if nse_open else "CLOSED",
-        "us": "OPEN" if us_open else "CLOSED"
+        "Indian Market": "OPEN" if nse_open else "CLOSED",
+        "US Market": "OPEN" if us_open else "CLOSED"
     }

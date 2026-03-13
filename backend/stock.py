@@ -184,3 +184,4 @@ def get_headlines(ticker: str, limit: int = 15) -> list[str]:
         ]
 
     return titles[:limit]
+    

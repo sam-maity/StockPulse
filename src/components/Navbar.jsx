@@ -19,27 +19,32 @@ const Navbar = ({ onAnalyze }) => {
 
   const [searchOpen, setSearchOpen] = useState(false)
   const [marketStatus, setMarketStatus] = useState({
-  nse: "CHECKING",
-  us: "CHECKING"
-})
-useEffect(() => {
+    india: "CHECKING",
+    us: "CHECKING"
+  })
+  useEffect(() => {
 
-  const fetchStatus = () => {
-    fetch("http://127.0.0.1:8000/market-status")
-      .then(res => res.json())
-      .then(data => setMarketStatus(data))
-      .catch(() =>
-        setMarketStatus({ nse: "OFFLINE", us: "OFFLINE" })
-      )
-  }
+    const fetchStatus = () => {
+      fetch("http://127.0.0.1:8000/market-status")
+        .then(res => res.json())
+        .then(data =>
+          setMarketStatus({
+            india: data["Indian Market"],
+            us: data["US Market"]
+          })
+        )
+        .catch(() =>
+          setMarketStatus({ nse: "OFFLINE", us: "OFFLINE" })
+        )
+    }
 
-  fetchStatus()
+    fetchStatus()
 
-  const interval = setInterval(fetchStatus, 60000)
+    const interval = setInterval(fetchStatus, 60000)
 
-  return () => clearInterval(interval)
+    return () => clearInterval(interval)
 
-}, [])
+  }, [])
   const wrapperRef = useRef(null)
   const inputRef = useRef(null)
 
@@ -56,7 +61,7 @@ useEffect(() => {
 
   return (
     <>
-      <div className="bg-black border-b border-white/5 h-20 flex items-center px-6 sticky top-0 z-50 backdrop-blur-xl">
+      <div className="bg-black border-b border-white/5 h-20 flex justify-between items-center px-6 sticky top-0 z-50 backdrop-blur-xl">
 
         {/* LOGO */}
         <div className="flex items-center gap-3 flex-1">
@@ -69,29 +74,22 @@ useEffect(() => {
 
 
         {/* MARKET STATUS TILES */}
-<div className="hidden md:flex items-center gap-4 flex-1">
+        <div className="hidden md:flex items-center gap-3 pr-52 flex-1">
+          <div className="flex items-center gap-2 px-3 py-1 rounded-lg bg-zinc-900 border border-zinc-800">
+            <div className={`w-2 h-2 rounded-full ${marketStatus.india === "OPEN" ? "bg-green-400" : "bg-red-500"}`} />
+            <span className="text-xs font-orbitron tracking-widest">
+              INDIAN MARKET {marketStatus.india}
+            </span>
+          </div>
 
-  {/* NSE */}
-  <div className="flex items-center gap-2 px-3 py-1 rounded-lg bg-zinc-900 border border-zinc-800">
-    <div className={`w-2 h-2 rounded-full ${
-      marketStatus.nse === "OPEN" ? "bg-green-400 pulse-dot" : "bg-red-400"
-    }`} />
-    <span className="text-xs font-orbitron tracking-widest text-white">
-      NSE {marketStatus.nse}
-    </span>
-  </div>
+          <div className="flex items-center gap-2 px-3 py-1 rounded-lg bg-zinc-900 border border-zinc-800">
+            <div className={`w-2 h-2 rounded-full ${marketStatus.us === "OPEN" ? "bg-green-400" : "bg-red-500"}`} />
+            <span className="text-xs font-orbitron tracking-widest">
+              US MARKET {marketStatus.us}
+            </span>
+          </div>
 
-  {/* US */}
-  <div className="flex items-center gap-2 px-3 py-1 rounded-lg bg-zinc-900 border border-zinc-800">
-    <div className={`w-2 h-2 rounded-full ${
-      marketStatus.us === "OPEN" ? "bg-green-400 pulse-dot" : "bg-red-400"
-    }`} />
-    <span className="text-xs font-orbitron tracking-widest text-white">
-      US {marketStatus.us}
-    </span>
-  </div>
-
-</div>
+        </div>
 
 
         {/* RIGHT SIDE */}

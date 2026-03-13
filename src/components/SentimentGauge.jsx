@@ -61,7 +61,20 @@ export default function SentimentGauge({ data, onClick }) {
         <p className={`text-sm font-semibold mt-2 tracking-wide ${c.text}`}>
           {data.overall_label.toUpperCase()}
         </p>
-
+        <div className="w-full h-1.5 bg-zinc-800 rounded-full mt-4 overflow-hidden">
+          <div
+            className={`h-full transition-all duration-500 ${
+              data.overall_label === "bullish"
+                ? "bg-green-400"
+                : data.overall_label === "bearish"
+                ? "bg-red-400"
+                : "bg-yellow-400"
+            }`}
+            style={{
+              width: `${Math.max(0, Math.min(100, ((data.overall_score + 1) / 2) * 100))}%`
+            }}
+          />
+        </div>
         <p className="text-[11px] text-zinc-400 mt-1 tracking-wide">
           FinBERT sentiment analysis
         </p>
@@ -81,13 +94,7 @@ export default function SentimentGauge({ data, onClick }) {
       tracking-wide
     "
   >
-    ⚠ {data.news_warning}
-
-    {data.headline_count && (
-      <p className="text-[10px] text-yellow-200/70 mt-1">
-        Based on {data.headline_count} news articles
-      </p>
-    )}
+    {data.news_warning}
   </div>
 )}
       <div className="grid grid-cols-3 gap-4 text-center">
