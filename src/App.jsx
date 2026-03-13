@@ -174,7 +174,7 @@ function App() {
                                 variants={card}
                             >
                                 <p className="text-yellow-300/70 text-xs font-orbitron tracking-wider">
-                                    EDUCATIONAL TOOL ONLY · NOT FINANCIAL ADVICE · ALWAYS DO YOUR OWN RESEARCH
+                                    EDUCATIONAL TOOL ONLY - NOT FINANCIAL ADVICE - ALWAYS DO YOUR OWN RESEARCH
                                 </p>
                             </motion.div>
 

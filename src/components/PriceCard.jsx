@@ -31,7 +31,7 @@ export default function PriceCard({ data, onClick }) {
                 </span>
             </div>
 
-            <div className="grid grid-cols-3 gap-4">
+            <div className="grid grid-cols-2 gap-4">
                 <div className="bg-white/5 border border-white/10 rounded-lg p-4 text-center">
                     <p className="text-[11px] text-zinc-400 uppercase tracking-wide mb-1">20 Day MA</p>
                     <p className="font-semibold text-lg">
@@ -43,13 +43,6 @@ export default function PriceCard({ data, onClick }) {
                     <p className="text-[11px] text-zinc-400 uppercase tracking-wide mb-1">50 Day MA</p>
                     <p className="font-semibold text-lg">
                         {data.ma50 ? `${currency}${data.ma50.toFixed(2)}` : "N/A"}
-                    </p>
-                </div>
-
-                <div className="bg-white/5 border border-white/10 rounded-lg p-4 text-center">
-                    <p className="text-[11px] text-zinc-400 uppercase tracking-wide mb-1">Trend</p>
-                    <p className={`font-semibold text-lg ${data.ma20 > data.ma50 ? "text-green-400" : "text-red-400"}`}>
-                        {data.ma20 > data.ma50 ? "Bullish" : "Bearish"}
                     </p>
                 </div>
             </div>

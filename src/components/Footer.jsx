@@ -41,7 +41,7 @@ const Footer = () => {
               </li>
 
               <li className="hover:text-purple-400 transition cursor-pointer">
-                Topic Drivers
+                Price Overview
               </li>
 
             </ul>
