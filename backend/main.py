@@ -2,6 +2,7 @@ from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 import yfinance as yf
 
+from analytics import get_market_status
 from models import FinbertDashboardOut
 from finbert import analyze_headlines, aggregate
 from stock import get_price_data, get_price_change_pct, get_headlines, POPULAR_STOCKS
@@ -15,6 +16,9 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+@app.get("/market-status")
+def market_status():
+    return get_market_status()
 
 @app.get("/")
 def root():
@@ -58,15 +62,26 @@ def search_stocks(q: str):
 
 @app.get("/stock/{ticker}/finbert", response_model=FinbertDashboardOut)
 def finbert_dashboard(ticker: str):
+
     ticker = ticker.upper().strip()
 
     try:
-        price_data   = get_price_data(ticker)
+
+        price_data = get_price_data(ticker)
         price_change = get_price_change_pct(ticker)
-        headlines    = get_headlines(ticker)
-        enriched     = analyze_headlines(headlines)
-        agg          = aggregate(enriched)
-        divergence   = sentiment_price_divergence(
+
+        headlines = get_headlines(ticker)
+
+        headline_count = len(headlines)
+
+        news_warning = None
+        if headline_count < 5:
+            news_warning = "Low news volume — sentiment may be unreliable."
+
+        enriched = analyze_headlines(headlines)
+        agg = aggregate(enriched)
+
+        divergence = sentiment_price_divergence(
             agg.get("overall_score", 0),
             price_change
         )
@@ -77,6 +92,8 @@ def finbert_dashboard(ticker: str):
             **agg,
             "divergence_comment": divergence,
             "headlines": enriched,
+            "headline_count": headline_count,
+            "news_warning": news_warning
         }
 
     except Exception as e:

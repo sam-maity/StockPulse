@@ -69,7 +69,29 @@ export default function SentimentGauge({ data, onClick }) {
         </p>
 
       </div>
+      
+{data.news_warning && (
+  <div
+    className="
+      mb-5
+      px-3 py-2
+      text-[11px]
+      text-yellow-300
+      bg-yellow-500/10
+      border border-yellow-500/20
+      rounded-md
+      tracking-wide
+    "
+  >
+    ⚠ {data.news_warning}
 
+    {data.headline_count && (
+      <p className="text-[10px] text-yellow-200/70 mt-1">
+        Based on {data.headline_count} news articles
+      </p>
+    )}
+  </div>
+)}
       <div className="grid grid-cols-3 gap-4 text-center">
 
         <div
