@@ -107,3 +107,33 @@ def sentiment_price_divergence(sentiment_score: float, price_change_pct: float) 
         f"Price {direction} {abs_pct}% with a sentiment score of {score}. "
         f"No strong divergence pattern detected."
     )
+
+from datetime import datetime
+import pytz
+
+def get_market_status():
+
+    ist = pytz.timezone("Asia/Kolkata")
+    est = pytz.timezone("US/Eastern")
+
+    now_ist = datetime.now(ist)
+    now_est = datetime.now(est)
+
+    # NSE
+    nse_open = False
+    if now_ist.weekday() < 5:
+        if (now_ist.hour > 9 or (now_ist.hour == 9 and now_ist.minute >= 15)) and \
+           (now_ist.hour < 15 or (now_ist.hour == 15 and now_ist.minute <= 30)):
+            nse_open = True
+
+    # US market
+    us_open = False
+    if now_est.weekday() < 5:
+        if (now_est.hour > 9 or (now_est.hour == 9 and now_est.minute >= 30)) and \
+           now_est.hour < 16:
+            us_open = True
+
+    return {
+        "nse": "OPEN" if nse_open else "CLOSED",
+        "us": "OPEN" if us_open else "CLOSED"
+    }

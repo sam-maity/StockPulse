@@ -1,4 +1,4 @@
-import { useState, useRef } from "react"
+import { useState, useRef, useEffect } from "react"
 import { IoSearch } from "react-icons/io5"
 import { CgProfile } from "react-icons/cg"
 import { motion, AnimatePresence } from "framer-motion"
@@ -18,7 +18,28 @@ const Navbar = ({ onAnalyze }) => {
   } = useTickerSearch(onAnalyze)
 
   const [searchOpen, setSearchOpen] = useState(false)
+  const [marketStatus, setMarketStatus] = useState({
+  nse: "CHECKING",
+  us: "CHECKING"
+})
+useEffect(() => {
 
+  const fetchStatus = () => {
+    fetch("http://127.0.0.1:8000/market-status")
+      .then(res => res.json())
+      .then(data => setMarketStatus(data))
+      .catch(() =>
+        setMarketStatus({ nse: "OFFLINE", us: "OFFLINE" })
+      )
+  }
+
+  fetchStatus()
+
+  const interval = setInterval(fetchStatus, 60000)
+
+  return () => clearInterval(interval)
+
+}, [])
   const wrapperRef = useRef(null)
   const inputRef = useRef(null)
 
@@ -47,13 +68,30 @@ const Navbar = ({ onAnalyze }) => {
         </div>
 
 
-        {/* LIVE badge */}
-        <div className="hidden md:flex items-center gap-2 flex-1">
-          <div className="w-2 h-2 rounded-full bg-green-400 pulse-dot" />
-          <span className="text-xs text-green-400 font-orbitron tracking-widest">
-            LIVE
-          </span>
-        </div>
+        {/* MARKET STATUS TILES */}
+<div className="hidden md:flex items-center gap-4 flex-1">
+
+  {/* NSE */}
+  <div className="flex items-center gap-2 px-3 py-1 rounded-lg bg-zinc-900 border border-zinc-800">
+    <div className={`w-2 h-2 rounded-full ${
+      marketStatus.nse === "OPEN" ? "bg-green-400 pulse-dot" : "bg-red-400"
+    }`} />
+    <span className="text-xs font-orbitron tracking-widest text-white">
+      NSE {marketStatus.nse}
+    </span>
+  </div>
+
+  {/* US */}
+  <div className="flex items-center gap-2 px-3 py-1 rounded-lg bg-zinc-900 border border-zinc-800">
+    <div className={`w-2 h-2 rounded-full ${
+      marketStatus.us === "OPEN" ? "bg-green-400 pulse-dot" : "bg-red-400"
+    }`} />
+    <span className="text-xs font-orbitron tracking-widest text-white">
+      US {marketStatus.us}
+    </span>
+  </div>
+
+</div>
 
 
         {/* RIGHT SIDE */}

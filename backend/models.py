@@ -32,3 +32,5 @@ class FinbertDashboardOut(BaseModel):
     risk_terms: Dict[str, int]
     divergence_comment: str
     headlines: List[HeadlineDetail]
+    headline_count: int | None = None
+    news_warning: str | None = None
