@@ -3,7 +3,7 @@ import { IoSearch } from "react-icons/io5"
 import { IoIosMenu } from "react-icons/io"
 import { motion, AnimatePresence } from "framer-motion"
 import useTickerSearch from "../hooks/useTickerSearch"
-import Categories from "./Categories"   // 👈 import
+import Categories from "./Categories"
 
 const Navbar = ({ onAnalyze }) => {
 
@@ -19,7 +19,7 @@ const Navbar = ({ onAnalyze }) => {
   } = useTickerSearch(onAnalyze)
 
   const [searchOpen, setSearchOpen] = useState(false)
-  const [menuOpen, setMenuOpen] = useState(false)   // 👈 was missing
+  const [menuOpen, setMenuOpen] = useState(false) 
   const [marketStatus, setMarketStatus] = useState({
     nse: "CHECKING",
     us: "CHECKING"
@@ -29,7 +29,7 @@ const Navbar = ({ onAnalyze }) => {
     const fetchStatus = () => {
       fetch("http://127.0.0.1:8000/market-status")
         .then(res => res.json())
-        .then(data =>                                 // ✅ this line
+        .then(data =>                            
           setMarketStatus({
             nse: data["Indian Market"],
             us: data["US Market"]
@@ -73,14 +73,14 @@ const Navbar = ({ onAnalyze }) => {
         </div>
 
         {/* MARKET STATUS TILES */}
-        <div className="hidden md:flex items-center gap-4 pr-50 flex-1">
+        <div className="hidden md:flex items-center gap-4 pr-70 flex-1">
 
           {/* NSE */}
           <div className="flex items-center gap-2 px-3 py-1 rounded-lg bg-zinc-900 border border-zinc-800">
             <div className={`w-2 h-2 rounded-full ${marketStatus.nse === "OPEN" ? "bg-green-400 pulse-dot" : "bg-red-400"
               }`} />
             <span className="text-xs font-orbitron tracking-widest text-white">
-              NSE {marketStatus.nse}
+              INDIAN MARKET {marketStatus.nse}
             </span>
           </div>
 
@@ -89,7 +89,7 @@ const Navbar = ({ onAnalyze }) => {
             <div className={`w-2 h-2 rounded-full ${marketStatus.us === "OPEN" ? "bg-green-400 pulse-dot" : "bg-red-400"
               }`} />
             <span className="text-xs font-orbitron tracking-widest text-white">
-              US {marketStatus.us}
+              US MARKET {marketStatus.us}
             </span>
           </div>
 
@@ -224,7 +224,7 @@ const Navbar = ({ onAnalyze }) => {
       {/* CATEGORIES PANEL */}
       < Categories isOpen={menuOpen}
         onClose={() => setMenuOpen(false)}
-        onAnalyze={handleSelect} /> {/* 👈 */}
+        onAnalyze={handleSelect} />
     </>
   )
 }
