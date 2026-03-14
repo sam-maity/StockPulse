@@ -1,129 +1,105 @@
-import { useEffect, useRef, useState } from "react";
-import { createChart } from "lightweight-charts";
+import { useEffect, useState } from "react"
+import PriceChart from "./PriceChart"
 
-export default function PriceCard({ data }) {
-  const chartRef = useRef();
+const PERIODS = [
+  { label: "1D",  value: "1d"  },
+  { label: "1W",  value: "5d"  },
+  { label: "1M",  value: "1mo" },
+  { label: "3M",  value: "3mo" },
+  { label: "1Y",  value: "1y"  },
+  { label: "MAX", value: "max" },
+]
 
-  const [period, setPeriod] = useState("3mo");
-  const [history, setHistory] = useState([]);
+export default function PriceCard({ data, onClick }) {
+  const [history, setHistory] = useState([])
+  const [period, setPeriod]   = useState("1d")
+  const [loading, setLoading] = useState(false)
 
-  async function loadHistory(p) {
-    const res = await fetch(
-      `http://localhost:8000/history?symbol=${data.ticker}&period=${p}`,
-    );
+  const currency = data.ticker?.endsWith(".NS") || data.ticker?.endsWith(".BO") ? "₹" : "$"
 
-    const d = await res.json();
+  // Badge always shows today's change vs yesterday
+  const badgePos = data.change >= 0
 
-    setHistory(d);
-  }
+  // Chart colour based on selected period's first vs last price
+  const chartPos = history.length >= 2
+    ? history[history.length - 1].value >= history[0].value
+    : badgePos
 
   useEffect(() => {
-    if (!data) return;
+    if (!data?.ticker) return
+    setLoading(true)
+    fetch(`http://127.0.0.1:8000/stock/${data.ticker}/history?period=${period}`)
+      .then(res => res.json())
+      .then(d => { setHistory(d); setLoading(false) })
+      .catch(() => { setHistory([]); setLoading(false) })
+  }, [data.ticker, period])
 
-    loadHistory(period);
-  }, [period, data]);
-
-  useEffect(() => {
-    if (!history.length) return;
-
-    chartRef.current.innerHTML = "";
-
-    const chart = createChart(chartRef.current, {
-      height: 320,
-
-      layout: {
-        background: { color: "transparent" },
-        textColor: "#9ca3af",
-      },
-
-      timeScale: {
-        timeVisible: true,
-        secondsVisible: false,
-      },
-
-      grid: {
-        vertLines: { color: "rgba(255,255,255,0.05)" },
-        horzLines: { color: "rgba(255,255,255,0.05)" },
-      },
-    });
-
-    const series = chart.addLineSeries({
-      color: "#22c55e",
-      lineWidth: 2,
-    });
-
-    series.setData(history);
-
-    chart.timeScale().fitContent();
-
-    return () => chart.remove();
-  }, [history]);
-const currency = data.ticker.includes(".NS") || data.ticker.includes(".BO") ? "₹" : "$"
   return (
-    <div className="card-cyber p-5">
-      <div className="flex justify-between items-center mb-4">
+    <div className="bg-[#0f0f1a] border border-white/10 rounded-2xl p-6 w-full">
+
+      <div className="flex items-start justify-between mb-4">
         <div>
-            <h2 className="text-xl font-bold">{data.ticker}</h2>
-            <p className="text-green-400 text-lg">{currency}{data.price}</p>
+          <p className="text-xs font-semibold text-purple-400 uppercase tracking-widest mb-1">
+            Price Overview
+          </p>
+          <h2 className="text-4xl font-bold text-white">
+            {currency}{data.price ? data.price.toFixed(2) : "N/A"}
+          </h2>
+          <p className="text-sm text-gray-400 mt-1">{data.ticker}</p>
+        </div>
+        <span className={`text-sm font-semibold px-3 py-1 rounded-lg mt-1
+          ${badgePos ? "bg-green-500/20 text-green-400" : "bg-red-500/20 text-red-400"}`}>
+          {badgePos ? "+" : ""}{data.change?.toFixed(2)} ({badgePos ? "+" : ""}{data.change_percent?.toFixed(2)}%)
+        </span>
+      </div>
+      <div className="grid grid-cols-2 gap-3 mb-4">
+        <div className="bg-white/5 rounded-xl p-3 text-center">
+          <p className="text-xs text-gray-400 mb-1">20 Day MA</p>
+          <p className="text-lg font-semibold text-white">
+            {data.ma20 ? `${currency}${data.ma20.toFixed(2)}` : "N/A"}
+          </p>
+        </div>
+        <div className="bg-white/5 rounded-xl p-3 text-center">
+          <p className="text-xs text-gray-400 mb-1">50 Day MA</p>
+          <p className="text-lg font-semibold text-white">
+            {data.ma50 ? `${currency}${data.ma50.toFixed(2)}` : "N/A"}
+          </p>
         </div>
       </div>
 
-      {/* RANGE BUTTONS */}
-
-      <div className="flex gap-2 mb-4 text-xs">
-        <button
-          onClick={() => setPeriod("1d")}
-          className="px-2 py-1 bg-zinc-800 rounded"
-        >
-          1D
-        </button>
-
-        <button
-          onClick={() => setPeriod("5d")}
-          className="px-2 py-1 bg-zinc-800 rounded"
-        >
-          5D
-        </button>
-
-        <button
-          onClick={() => setPeriod("1mo")}
-          className="px-2 py-1 bg-zinc-800 rounded"
-        >
-          1M
-        </button>
-
-        <button
-          onClick={() => setPeriod("3mo")}
-          className="px-2 py-1 bg-zinc-800 rounded"
-        >
-          3M
-        </button>
-
-        <button
-          onClick={() => setPeriod("1y")}
-          className="px-2 py-1 bg-zinc-800 rounded"
-        >
-          1Y
-        </button>
-
-        <button
-          onClick={() => setPeriod("5y")}
-          className="px-2 py-1 bg-zinc-800 rounded"
-        >
-          5Y
-        </button>
-
-        <button
-          onClick={() => setPeriod("max")}
-          className="px-2 py-1 bg-zinc-800 rounded"
-        >
-          MAX
-        </button>
+      {/* Period Buttons */}
+      <div className="flex gap-2 mb-4">
+        {PERIODS.map(p => (
+          <button
+            key={p.value}
+            onClick={() => setPeriod(p.value)}
+            className={`flex-1 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer
+              ${period === p.value
+                ? "bg-purple-600 text-white"
+                : "bg-white/5 text-gray-400 hover:bg-white/10"}`}
+          >
+            {p.label}
+          </button>
+        ))}
       </div>
 
-      {/* CHART */}
+      {/* Chart */}
+      {loading ? (
+        <div className="h-[280px] flex items-center justify-center text-gray-500 text-sm">
+          Loading...
+        </div>
+      ) : (
+        <PriceChart history={history} isPos={chartPos} />
+      )}
 
-      <div ref={chartRef} style={{ height: "320px", width: "100%" }} />
+      {onClick && (
+        <button
+          onClick={onClick}
+          className="w-full mt-4 text-center text-xs text-purple-400 hover:text-purple-300 transition-colors"
+        >
+          VIEW DEEP ANALYSIS →
+        </button>
+      )}
     </div>
-  );
+  )
 }

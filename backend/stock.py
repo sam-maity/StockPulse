@@ -1,6 +1,10 @@
 import yfinance as yf
 import pandas as pd
+import calendar
+import pytz
 from fastapi import HTTPException
+
+# ── Constants ─────────────────────────────────────────────────────────────────
 
 POPULAR_STOCKS = [
     {"symbol": "TCS.NS",        "name": "Tata Consultancy Services"},
@@ -65,26 +69,30 @@ POPULAR_STOCKS = [
     {"symbol": "INTC",  "name": "Intel"},
 ]
 
+# ── Helpers ───────────────────────────────────────────────────────────────────
+
 def _get_currency(ticker: str) -> str:
-    """Return currency symbol based on ticker suffix."""
     if ticker.endswith(".NS") or ticker.endswith(".BO"):
         return "₹"
     return "$"
 
-
 def _extract_title(news_item: dict) -> str:
-    """
-    yfinance news structure changed in v0.2.40+.
-    Handles both old flat structure and new nested content structure.
-    """
     content = news_item.get("content", {})
     if isinstance(content, dict) and content.get("title"):
         return content["title"]
     return news_item.get("title", "")
 
+def _intraday_timezone(ticker: str) -> str:
+    if ticker.endswith(".NS") or ticker.endswith(".BO"):
+        return "Asia/Kolkata"
+    return "America/New_York"
+
+# ── Core functions ────────────────────────────────────────────────────────────
+
 def get_price_data(ticker: str) -> dict:
     stock = yf.Ticker(ticker)
 
+    # 6mo daily — used only for MA20/MA50 and previous close
     hist = stock.history(period="6mo")
 
     if hist.empty:
@@ -92,7 +100,6 @@ def get_price_data(ticker: str) -> dict:
             status_code=404,
             detail=f"No price data found for '{ticker}'. Check the ticker symbol."
         )
-
     if len(hist) < 2:
         raise HTTPException(
             status_code=422,
@@ -105,10 +112,17 @@ def get_price_data(ticker: str) -> dict:
     last = hist.iloc[-1]
     prev = hist.iloc[-2]
 
-    current_price = float(last["Close"])
-    prev_close    = float(prev["Close"])
-    change        = round(current_price - prev_close, 2)
-    change_pct    = round((change / prev_close) * 100, 2)
+    # Pull real-time price from 1-minute intraday
+    intraday = stock.history(period="1d", interval="1m")
+    if not intraday.empty:
+        current_price = float(intraday["Close"].iloc[-1])
+        prev_close    = float(last["Close"])   # yesterday's daily close
+    else:
+        current_price = float(last["Close"])
+        prev_close    = float(prev["Close"])
+
+    change     = round(current_price - prev_close, 2)
+    change_pct = round((change / prev_close) * 100, 2)
 
     ma20 = float(last["MA20"]) if not pd.isna(last["MA20"]) else None
     ma50 = float(last["MA50"]) if not pd.isna(last["MA50"]) else None
@@ -121,7 +135,6 @@ def get_price_data(ticker: str) -> dict:
         "ma50":           round(ma50, 2) if ma50 is not None else None,
         "currency":       _get_currency(ticker),
     }
-
 
 def get_price_change_pct(ticker: str, period: str = "5d") -> float:
     stock = yf.Ticker(ticker)
@@ -137,7 +150,6 @@ def get_price_change_pct(ticker: str, period: str = "5d") -> float:
         return 0.0
 
     return round((end - start) / start * 100, 2)
-
 
 def get_headlines(ticker: str, limit: int = 15) -> list[dict]:
     company = (
@@ -157,10 +169,12 @@ def get_headlines(ticker: str, limit: int = 15) -> list[dict]:
     results = []
     for n in news:
         content = n.get("content", {})
+
         if isinstance(content, dict) and content.get("title"):
             title = content["title"]
         else:
             title = n.get("title", "")
+
         url = (
             (isinstance(content, dict) and (
                 content.get("canonicalUrl", {}).get("url") or
@@ -175,36 +189,49 @@ def get_headlines(ticker: str, limit: int = 15) -> list[dict]:
 
     if not results:
         results = [
-            {"title": f"{company} reports quarterly earnings results", "url": ""},
-            {"title": f"{company} stock movement amid market volatility", "url": ""},
-            {"title": f"Investors watch {company} amid sector rotation", "url": ""},
-            {"title": f"{company} management outlines strategic roadmap", "url": ""},
-            {"title": f"{company} navigates competition in core markets", "url": ""},
-            {"title": f"Analysts revise {company} price target", "url": ""},
+            {"title": f"{company} reports quarterly earnings results",      "url": ""},
+            {"title": f"{company} stock movement amid market volatility",   "url": ""},
+            {"title": f"Investors watch {company} amid sector rotation",    "url": ""},
+            {"title": f"{company} management outlines strategic roadmap",   "url": ""},
+            {"title": f"{company} navigates competition in core markets",   "url": ""},
+            {"title": f"Analysts revise {company} price target",            "url": ""},
             {"title": f"{company} expands into adjacent business segments", "url": ""},
         ]
 
     return results[:limit]
 
-def get_price_history(ticker: str):
+def get_price_history(ticker: str, period: str = "1d"):
+    valid = {"1d", "5d", "1mo", "3mo", "6mo", "1y", "2y", "5y", "max"}
+    if period not in valid:
+        period = "1d"
+
+    if period == "1d":
+        interval = "5m"
+    elif period == "5d":
+        interval = "15m"
+    else:
+        interval = "1d"
 
     stock = yf.Ticker(ticker)
-
-    # intraday data
-    hist = stock.history(period="5d", interval="5m")
+    hist  = stock.history(period=period, interval=interval)
 
     if hist.empty:
         return []
 
+    local_tz = pytz.timezone(_intraday_timezone(ticker))
     data = []
 
     for date, row in hist.iterrows():
+        close = float(row["Close"])
+        if pd.isna(close):
+            continue
 
-        ts = int(date.timestamp())
-
-        data.append({
-            "time": ts,
-            "value": float(row["Close"])
-        })
+        if interval in ("5m", "15m"):
+            date_local  = date.tz_convert(local_tz)
+            naive_local = date_local.replace(tzinfo=None)
+            ts          = int(calendar.timegm(naive_local.timetuple()))
+            data.append({"time": ts, "value": close})
+        else:
+            data.append({"time": date.strftime("%Y-%m-%d"), "value": close})
 
     return data

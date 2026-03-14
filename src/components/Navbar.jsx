@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from "framer-motion"
 import useTickerSearch from "../hooks/useTickerSearch"
 import Categories from "./Categories"
 
-const Navbar = ({ onAnalyze }) => {
+const Navbar = ({ onAnalyze, data, setData }) => {
 
   const {
     ticker,
@@ -67,7 +67,10 @@ const Navbar = ({ onAnalyze }) => {
             className="text-2xl text-white cursor-pointer hover:text-purple-400 transition"
             onClick={() => setMenuOpen(true)}
           />
-          <span className="font-[Poiret-One] text-white text-xl tracking-widest hidden sm:block">
+          <span
+            className="font-[Poiret-One] text-white text-xl tracking-widest hidden sm:block cursor-pointer"
+            onClick={() => setData(null)}
+          >
             STOCKPULSE
           </span>
         </div>

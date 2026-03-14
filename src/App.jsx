@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import Navbar from './components/Navbar'
-import News from './components/news'
+import News from './components/News'
 import PriceCard from './components/PriceCard'
 import SentimentGauge from './components/SentimentGauge'
 import TopicBreakdown from './components/TopicBreakdown'
@@ -62,7 +62,7 @@ function App() {
                 bg-size-[40px_40px]"
             />
 
-            <Navbar onAnalyze={handleAnalyze} />
+            <Navbar onAnalyze={handleAnalyze} data={data} setData={setData} />
 
             <div className="max-w-6xl mx-auto px-6 py-10 relative z-10">
                 {loading && (
