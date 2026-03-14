@@ -13,8 +13,6 @@ finbert = pipeline(
 )
 print("FinBERT ready")
 
-# ── Constants ──────────────────────────────────────────────────────────────────
-
 LABEL_TO_SCORE = {"positive": 1, "neutral": 0, "negative": -1}
 
 TOPIC_KEYWORDS = {
@@ -26,7 +24,6 @@ TOPIC_KEYWORDS = {
 }
 
 HYPE_WORDS = [
-    # Positive hype
     "soar", "soars", "soaring", "soared",
     "surge", "surges", "surging", "surged",
     "skyrocket", "skyrockets", "skyrocketing", "skyrocketed",
@@ -36,7 +33,6 @@ HYPE_WORDS = [
     "monster", "massive", "huge", "enormous",
     "breakout", "breakthrough", "blockbuster",
     "record", "milestone", "historic", "landmark",
-    # Negative hype
     "crash", "crashes", "crashing", "crashed",
     "plunge", "plunges", "plunging", "plunged",
     "collapse", "collapses", "collapsing", "collapsed",
@@ -56,8 +52,6 @@ RISK_WORDS = [
     "sec", "sebi", "sanction", "violation", "indicted", "seized",
 ]
 
-# ── Per-headline helpers ───────────────────────────────────────────────────────
-
 def classify_topics(text: str) -> list[str]:
     text_l = text.lower()
     topics = [t for t, words in TOPIC_KEYWORDS.items() if any(w in text_l for w in words)]
@@ -73,9 +67,6 @@ def get_hype_score(text: str) -> int:
 def get_risk_flags(text: str) -> list[str]:
     lower = text.lower()
     return [w for w in RISK_WORDS if w in lower]
-
-
-# ── Hype aggregation (across all headlines) ───────────────────────────────────
 
 def compute_hype(headlines: list[str]) -> tuple[float, str]:
     """
@@ -96,9 +87,6 @@ def compute_hype(headlines: list[str]) -> tuple[float, str]:
         level = "calm"
 
     return ratio, level
-
-
-# ── Headline analysis ─────────────────────────────────────────────────────────
 
 def analyze_headlines(headlines: list) -> list[dict]:
     if not headlines:
@@ -148,8 +136,6 @@ def analyze_headlines(headlines: list) -> list[dict]:
 
     return enriched
 
-# ── Aggregation ───────────────────────────────────────────────────────────────
-
 def aggregate(enriched: list[dict]) -> dict:
     if not enriched:
         return {
@@ -173,12 +159,10 @@ def aggregate(enriched: list[dict]) -> dict:
     else:
         overall_label = "neutral"
 
-    # Confidence buckets
     hi  = sum(1 for h in enriched if h["confidence"] >= 0.9)
     mid = sum(1 for h in enriched if 0.7 <= h["confidence"] < 0.9)
     lo  = sum(1 for h in enriched if h["confidence"] < 0.7)
 
-    # Topic-level sentiment
     topic_scores = defaultdict(list)
     for h in enriched:
         for t in h["topics"]:
@@ -187,16 +171,12 @@ def aggregate(enriched: list[dict]) -> dict:
         t: round(statistics.mean(v), 3)
         for t, v in topic_scores.items()
     }
-
-    # Hype — use compute_hype() on raw headline strings for accuracy
     raw_headlines        = [h["headline"] for h in enriched]
     hype_ratio, hype_level = compute_hype(raw_headlines)
 
-    # Risk terms
     all_risks  = [rf for h in enriched for rf in h["risk_flags"]]
     risk_terms = dict(Counter(all_risks))
 
-    # Label counts
     label_counts = dict(Counter(h["label"] for h in enriched))
     label_counts.setdefault("positive", 0)
     label_counts.setdefault("neutral",  0)

@@ -71,7 +71,6 @@ const Categories = ({ isOpen, onClose, onAnalyze }) => {
     <AnimatePresence>
       {isOpen && (
         <>
-          {/* Overlay */}
           <motion.div
             className="fixed inset-0 bg-black/60 backdrop-blur-sm z-40"
             initial={{ opacity: 0 }}
@@ -80,7 +79,6 @@ const Categories = ({ isOpen, onClose, onAnalyze }) => {
             onClick={() => { onClose(); setOpenSector(null) }}
           />
 
-          {/* Side Panel */}
           <motion.div
             className="fixed top-0 left-0 h-full w-72 bg-[#0a0a0f] border-r border-white/5 z-50 flex flex-col p-6 overflow-y-auto"
             initial={{ x: -300 }}
@@ -88,7 +86,6 @@ const Categories = ({ isOpen, onClose, onAnalyze }) => {
             exit={{ x: -300 }}
             transition={{ type: "spring", stiffness: 300, damping: 30 }}
           >
-            {/* Header */}
             <div className="flex items-center justify-between mb-2">
               <h2 className="font-[Poiret-One] text-white text-lg tracking-widest">
                 STOCKPULSE
@@ -103,12 +100,9 @@ const Categories = ({ isOpen, onClose, onAnalyze }) => {
               SECTORS
             </p>
 
-            {/* Sector List */}
             <div className="flex flex-col gap-6">
               {sectors.map((sector, i) => (
                 <div key={sector.label}>
-
-                  {/* Sector Row */}
                   <motion.div
                     initial={{ opacity: 0, x: -20 }}
                     animate={{ opacity: 1, x: 0 }}
@@ -121,8 +115,6 @@ const Categories = ({ isOpen, onClose, onAnalyze }) => {
                     }`}>
                       {sector.label}
                     </span>
-
-                    {/* Chevron */}
                     <motion.span
                       animate={{ rotate: openSector === sector.label ? 180 : 0 }}
                       transition={{ duration: 0.2 }}
@@ -132,7 +124,6 @@ const Categories = ({ isOpen, onClose, onAnalyze }) => {
                     </motion.span>
                   </motion.div>
 
-                  {/* Stocks Dropdown */}
                   <AnimatePresence>
                     {openSector === sector.label && (
                       <motion.div
@@ -168,8 +159,6 @@ const Categories = ({ isOpen, onClose, onAnalyze }) => {
                 </div>
               ))}
             </div>
-
-            {/* Footer */}
             <div className="mt-auto pt-6 text-xs text-zinc-700 text-center font-orbitron tracking-widest">
               EDUCATIONAL USE ONLY
             </div>

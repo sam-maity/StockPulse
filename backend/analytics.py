@@ -118,15 +118,11 @@ def get_market_status():
 
     now_ist = datetime.now(ist)
     now_est = datetime.now(est)
-
-    # NSE
     nse_open = False
     if now_ist.weekday() < 5:
         if (now_ist.hour > 9 or (now_ist.hour == 9 and now_ist.minute >= 15)) and \
            (now_ist.hour < 15 or (now_ist.hour == 15 and now_ist.minute <= 30)):
             nse_open = True
-
-    # US market
     us_open = False
     if now_est.weekday() < 5:
         if (now_est.hour > 9 or (now_est.hour == 9 and now_est.minute >= 30)) and \

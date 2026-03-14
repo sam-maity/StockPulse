@@ -51,7 +51,6 @@ export default function SearchBar({ onAnalyze }) {
     useEffect(() => {
         const handler = (e) => {
             if (wrapperRef.current && !wrapperRef.current.contains(e.target)) {
-                // dropdown will disappear because suggestions won't be shown
             }
         }
 
@@ -69,8 +68,6 @@ export default function SearchBar({ onAnalyze }) {
         <motion.section {...searchAnim} className="px-6 py-28">
 
             <div className="max-w-5xl mx-auto flex flex-col items-center text-center gap-10">
-
-                {/* HEADER */}
                 <div>
                     <p className="text-xs uppercase tracking-widest text-purple-400 mb-3">
                         Market Intelligence
@@ -81,8 +78,6 @@ export default function SearchBar({ onAnalyze }) {
                     </h2>
                 </div>
 
-
-                {/* SEARCH */}
                 <div
                     ref={wrapperRef}
                     className="
@@ -137,8 +132,6 @@ export default function SearchBar({ onAnalyze }) {
                         Analyze
                     </button>
 
-
-                    {/* DROPDOWN */}
                     <AnimatePresence>
 
                         {showDropdown && dropItems.length > 0 && (
@@ -189,9 +182,6 @@ export default function SearchBar({ onAnalyze }) {
                     </AnimatePresence>
 
                 </div>
-
-
-                {/* DESCRIPTION */}
                 <p className="text-zinc-400 text-lg max-w-2xl leading-relaxed">
                     Enter a company or ticker to analyze real-time financial sentiment.
                     StockPulse evaluates financial news using AI models trained on market

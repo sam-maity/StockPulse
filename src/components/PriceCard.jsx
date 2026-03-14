@@ -1,94 +1,129 @@
-import { useEffect, useState } from "react"
-import PriceChart from "./PriceChart"
+import { useEffect, useRef, useState } from "react";
+import { createChart } from "lightweight-charts";
 
-export default function PriceCard({ data, onClick }) {
+export default function PriceCard({ data }) {
+  const chartRef = useRef();
 
-  const [history, setHistory] = useState([])
+  const [period, setPeriod] = useState("3mo");
+  const [history, setHistory] = useState([]);
 
-  const isPos = data.change >= 0
-  const currency =
-    data.ticker?.endsWith(".NS") || data.ticker?.endsWith(".BO")
-      ? "₹"
-      : "$"
+  async function loadHistory(p) {
+    const res = await fetch(
+      `http://localhost:8000/history?symbol=${data.ticker}&period=${p}`,
+    );
+
+    const d = await res.json();
+
+    setHistory(d);
+  }
 
   useEffect(() => {
-    if (!data?.ticker) return
+    if (!data) return;
 
-    fetch(`http://127.0.0.1:8000/stock/${data.ticker}/history`)
-      .then(res => res.json())
-      .then(d => setHistory(d))
-      .catch(() => setHistory([]))
-  }, [data.ticker])
+    loadHistory(period);
+  }, [period, data]);
 
+  useEffect(() => {
+    if (!history.length) return;
+
+    chartRef.current.innerHTML = "";
+
+    const chart = createChart(chartRef.current, {
+      height: 320,
+
+      layout: {
+        background: { color: "transparent" },
+        textColor: "#9ca3af",
+      },
+
+      timeScale: {
+        timeVisible: true,
+        secondsVisible: false,
+      },
+
+      grid: {
+        vertLines: { color: "rgba(255,255,255,0.05)" },
+        horzLines: { color: "rgba(255,255,255,0.05)" },
+      },
+    });
+
+    const series = chart.addLineSeries({
+      color: "#22c55e",
+      lineWidth: 2,
+    });
+
+    series.setData(history);
+
+    chart.timeScale().fitContent();
+
+    return () => chart.remove();
+  }, [history]);
+const currency = data.ticker.includes(".NS") || data.ticker.includes(".BO") ? "₹" : "$"
   return (
-    <div className="w-full bg-white/5 backdrop-blur-md border border-white/10 rounded-xl p-6 text-white transition hover:border-purple-500/30">
-
-      {/* Header */}
-      <div className="flex items-center justify-between mb-5">
-        <h2 className="text-sm tracking-widest uppercase text-purple-400 font-semibold">
-          Price Overview
-        </h2>
-        <div className="h-[1px] flex-1 ml-4 bg-gradient-to-r from-purple-500/40 to-transparent" />
-      </div>
-
-      {/* Price */}
-      <div className="flex justify-between items-center mb-6">
+    <div className="card-cyber p-5">
+      <div className="flex justify-between items-center mb-4">
         <div>
-          <p className="text-4xl font-semibold tracking-tight">
-            {currency}{data.price ? data.price.toFixed(2) : "N/A"}
-          </p>
-          <p className="text-xs text-zinc-400 mt-1 tracking-wider">
-            {data.ticker}
-          </p>
+            <h2 className="text-xl font-bold">{data.ticker}</h2>
+            <p className="text-green-400 text-lg">{currency}{data.price}</p>
         </div>
+      </div>
 
-        <span
-          className={`px-5 py-2 rounded-lg text-sm font-semibold border
-          ${isPos
-            ? "bg-green-500/10 text-green-400 border-green-500/30"
-            : "bg-red-500/10 text-red-400 border-red-500/30"
-          }`}
+      {/* RANGE BUTTONS */}
+
+      <div className="flex gap-2 mb-4 text-xs">
+        <button
+          onClick={() => setPeriod("1d")}
+          className="px-2 py-1 bg-zinc-800 rounded"
         >
-          {isPos ? "+" : ""}
-          {data.change?.toFixed(2)} ({isPos ? "+" : ""}
-          {data.change_percent?.toFixed(2)}%)
-        </span>
+          1D
+        </button>
+
+        <button
+          onClick={() => setPeriod("5d")}
+          className="px-2 py-1 bg-zinc-800 rounded"
+        >
+          5D
+        </button>
+
+        <button
+          onClick={() => setPeriod("1mo")}
+          className="px-2 py-1 bg-zinc-800 rounded"
+        >
+          1M
+        </button>
+
+        <button
+          onClick={() => setPeriod("3mo")}
+          className="px-2 py-1 bg-zinc-800 rounded"
+        >
+          3M
+        </button>
+
+        <button
+          onClick={() => setPeriod("1y")}
+          className="px-2 py-1 bg-zinc-800 rounded"
+        >
+          1Y
+        </button>
+
+        <button
+          onClick={() => setPeriod("5y")}
+          className="px-2 py-1 bg-zinc-800 rounded"
+        >
+          5Y
+        </button>
+
+        <button
+          onClick={() => setPeriod("max")}
+          className="px-2 py-1 bg-zinc-800 rounded"
+        >
+          MAX
+        </button>
       </div>
 
-      {/* Moving Averages */}
-      <div className="grid grid-cols-2 gap-4 mb-6">
+      {/* CHART */}
 
-        <div className="bg-white/5 border border-white/10 rounded-lg p-4 text-center">
-          <p className="text-[11px] text-zinc-400 uppercase tracking-wide mb-1">
-            20 Day MA
-          </p>
-          <p className="font-semibold text-lg">
-            {data.ma20 ? `${currency}${data.ma20.toFixed(2)}` : "N/A"}
-          </p>
-        </div>
-
-        <div className="bg-white/5 border border-white/10 rounded-lg p-4 text-center">
-          <p className="text-[11px] text-zinc-400 uppercase tracking-wide mb-1">
-            50 Day MA
-          </p>
-          <p className="font-semibold text-lg">
-            {data.ma50 ? `${currency}${data.ma50.toFixed(2)}` : "N/A"}
-          </p>
-        </div>
-
-      </div>
-
-      {/* Chart */}
-      <div className="mb-6">
-        <PriceChart history={history} />
-      </div>
-
-            <button
-                onClick={onClick}
-                className="mt-4 w-full py-2 text-xs font-orbitron tracking-widest text-cyan-500/60 border border-cyan-500/10 rounded-lg hover:border-cyan-500/30 hover:text-cyan-400 hover:bg-cyan-500/5 transition-all cursor-pointer"
-            >
-                VIEW DEEP ANALYSIS →
-            </button>
-        </div>
-    )
+      <div ref={chartRef} style={{ height: "320px", width: "100%" }} />
+    </div>
+  );
 }
