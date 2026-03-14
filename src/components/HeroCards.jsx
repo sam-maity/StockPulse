@@ -11,9 +11,6 @@ export default function HeroCards() {
     return (
 
         <div className="max-w-5xl mx-auto flex flex-col gap-32 px-6 py-32">
-
-
-            {/* CARD 1 */}
             <motion.div {...cardAnim} className="w-full cursor-pointer">
 
                 <div className="
@@ -53,10 +50,6 @@ bg-purple-500/10 flex items-center justify-center text-purple-400 mb-8">
 
                 </div>
             </motion.div>
-
-
-
-            {/* CARD 2 */}
             <motion.div {...cardAnim} className="w-full cursor-pointer">
 
                 <div className="
@@ -97,9 +90,6 @@ bg-indigo-500/10 flex items-center justify-center text-indigo-400 mb-8">
                 </div>
             </motion.div>
 
-
-
-            {/* CARD 3 */}
             <motion.div {...cardAnim} className="w-full cursor-pointer">
 
                 <div className="

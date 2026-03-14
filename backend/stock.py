@@ -2,10 +2,7 @@ import yfinance as yf
 import pandas as pd
 from fastapi import HTTPException
 
-# ── Constants ─────────────────────────────────────────────────────────────────
-
 POPULAR_STOCKS = [
-    # ── India · NSE ───────────────────────────────────────────────────────────
     {"symbol": "TCS.NS",        "name": "Tata Consultancy Services"},
     {"symbol": "RELIANCE.NS",   "name": "Reliance Industries"},
     {"symbol": "INFY.NS",       "name": "Infosys"},
@@ -56,7 +53,6 @@ POPULAR_STOCKS = [
     {"symbol": "HINDALCO.NS",   "name": "Hindalco Industries"},
     {"symbol": "TATASTEEL.NS",  "name": "Tata Steel"},
     {"symbol": "JSWSTEEL.NS",   "name": "JSW Steel"},
-    # ── US · NYSE / NASDAQ ───────────────────────────────────────────────────
     {"symbol": "AAPL",  "name": "Apple Inc."},
     {"symbol": "MSFT",  "name": "Microsoft"},
     {"symbol": "GOOGL", "name": "Alphabet (Google)"},
@@ -68,8 +64,6 @@ POPULAR_STOCKS = [
     {"symbol": "AMD",   "name": "AMD"},
     {"symbol": "INTC",  "name": "Intel"},
 ]
-
-# ── Helpers ───────────────────────────────────────────────────────────────────
 
 def _get_currency(ticker: str) -> str:
     """Return currency symbol based on ticker suffix."""
@@ -83,20 +77,14 @@ def _extract_title(news_item: dict) -> str:
     yfinance news structure changed in v0.2.40+.
     Handles both old flat structure and new nested content structure.
     """
-    # New structure: item["content"]["title"]
     content = news_item.get("content", {})
     if isinstance(content, dict) and content.get("title"):
         return content["title"]
-    # Old structure: item["title"]
     return news_item.get("title", "")
-
-
-# ── Core functions ────────────────────────────────────────────────────────────
 
 def get_price_data(ticker: str) -> dict:
     stock = yf.Ticker(ticker)
 
-    # 6mo gives enough data for a reliable MA50 (needs ~50 trading days)
     hist = stock.history(period="6mo")
 
     if hist.empty:
@@ -169,14 +157,10 @@ def get_headlines(ticker: str, limit: int = 15) -> list[dict]:
     results = []
     for n in news:
         content = n.get("content", {})
-
-        # Title — handle old and new yfinance structure
         if isinstance(content, dict) and content.get("title"):
             title = content["title"]
         else:
             title = n.get("title", "")
-
-        # URL — handle old and new yfinance structure
         url = (
             (isinstance(content, dict) and (
                 content.get("canonicalUrl", {}).get("url") or
@@ -189,7 +173,6 @@ def get_headlines(ticker: str, limit: int = 15) -> list[dict]:
         if title and len(title) > 10:
             results.append({"title": title, "url": url})
 
-    # Fallback if no news found — no URLs for synthetic headlines
     if not results:
         results = [
             {"title": f"{company} reports quarterly earnings results", "url": ""},

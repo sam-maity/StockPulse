@@ -93,7 +93,6 @@ const News = () => {
   className="max-w-5xl mx-auto px-6 py-32 relative"
 >
 
-{/* HEADER */}
 
 <div className="flex items-center justify-between mb-12">
 
@@ -125,8 +124,6 @@ Refresh
 
 </div>
 
-
-{/* NEWS LIST */}
 
 <div className="
 space-y-4
@@ -168,7 +165,6 @@ cursor-pointer
 "
 >
 
-{/* META */}
 
 <div className="flex items-center gap-2 mb-2 flex-wrap">
 
@@ -203,8 +199,6 @@ rounded-full
 </div>
 
 
-{/* HEADLINE */}
-
 <h3 className="
 text-base
 font-medium
@@ -216,8 +210,6 @@ transition
 {item.headline}
 </h3>
 
-
-{/* SUMMARY */}
 
 {item.summary && (
 <p className="
@@ -231,8 +223,6 @@ line-clamp-2
 </p>
 )}
 
-
-{/* FOOTER */}
 
 <div className="flex items-center justify-between mt-4">
 
@@ -256,8 +246,6 @@ onError={e => e.target.style.display="none"}
 ))
 
 )}
-
-{/* SCROLL FADE */}
 
 <div className="
 pointer-events-none

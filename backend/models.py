@@ -3,9 +3,9 @@ from typing import Dict, List, Optional
 
 class HeadlineDetail(BaseModel):
     headline: str
-    label: str           # positive / neutral / negative
-    confidence: float    # 0–1
-    score: int           # +1 / 0 / -1
+    label: str           
+    confidence: float   
+    score: int           
     topics: List[str]
     hype_score: int
     risk_flags: List[str]

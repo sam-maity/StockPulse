@@ -71,31 +71,23 @@ const Navbar = ({ onAnalyze }) => {
             STOCKPULSE
           </span>
         </div>
-
-        {/* MARKET STATUS TILES */}
-        <div className="hidden md:flex items-center gap-4 pr-50 flex-1">
-
-          {/* NSE */}
+        <div className="hidden md:flex items-center gap-4 pr-72 flex-1">
           <div className="flex items-center gap-2 px-3 py-1 rounded-lg bg-zinc-900 border border-zinc-800">
             <div className={`w-2 h-2 rounded-full ${marketStatus.nse === "OPEN" ? "bg-green-400 pulse-dot" : "bg-red-400"
               }`} />
             <span className="text-xs font-orbitron tracking-widest text-white">
-              NSE {marketStatus.nse}
+              INDIAN MARKET {marketStatus.nse}
             </span>
           </div>
-
-          {/* US */}
           <div className="flex items-center gap-2 px-3 py-1 rounded-lg bg-zinc-900 border border-zinc-800">
             <div className={`w-2 h-2 rounded-full ${marketStatus.us === "OPEN" ? "bg-green-400 pulse-dot" : "bg-red-400"
               }`} />
             <span className="text-xs font-orbitron tracking-widest text-white">
-              US {marketStatus.us}
+              US MARKET {marketStatus.us}
             </span>
           </div>
 
         </div>
-
-        {/* RIGHT SIDE */}
         <div className="flex items-center gap-4 text-white" ref={wrapperRef}>
 
           <AnimatePresence mode="wait">
@@ -124,8 +116,6 @@ const Navbar = ({ onAnalyze }) => {
                 transition={{ duration: 0.25, ease: "easeOut" }}
                 className="relative flex items-center gap-2"
               >
-
-                {/* INPUT */}
                 <div className="relative flex-1">
 
                   <IoSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-zinc-500 text-sm pointer-events-none" />
@@ -149,8 +139,6 @@ const Navbar = ({ onAnalyze }) => {
                   )}
 
                 </div>
-
-                {/* RUN BUTTON */}
                 <button
                   onClick={() => {
                     handleSearch()
@@ -160,8 +148,6 @@ const Navbar = ({ onAnalyze }) => {
                 >
                   RUN
                 </button>
-
-                {/* DROPDOWN */}
                 <AnimatePresence>
                   {showDropdown && dropItems.length > 0 && (
                     <motion.div
@@ -217,14 +203,10 @@ const Navbar = ({ onAnalyze }) => {
         </div>
 
       </div >
-
-      {/* bottom glow */}
       < div className="h-px bg-linear-to-r from-transparent via-cyan-500/20 to-transparent" />
-
-      {/* CATEGORIES PANEL */}
       < Categories isOpen={menuOpen}
         onClose={() => setMenuOpen(false)}
-        onAnalyze={handleSelect} /> {/* 👈 */}
+        onAnalyze={handleSelect} />
     </>
   )
 }

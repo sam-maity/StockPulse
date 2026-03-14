@@ -53,24 +53,18 @@ function App() {
 
     return (
         <div className="min-h-screen bg-[#050505] text-white relative">
-
-            {/* Ambient lighting */}
             <div className="fixed inset-0 pointer-events-none">
-                <div className="absolute w-[700px] h-[700px] bg-purple-900/10 blur-[180px] -top-60 -left-60" />
-                <div className="absolute w-[600px] h-[600px] bg-indigo-900/10 blur-[160px] bottom-0 right-0" />
+                <div className="absolute w-175 h-175 bg-purple-900/10 blur-[180px] -top-60 -left-60" />
+                <div className="absolute w-150 h-150 bg-indigo-900/10 blur-[160px] bottom-0 right-0" />
             </div>
-
-            {/* Grid texture */}
             <div className="absolute inset-0 opacity-[0.03] pointer-events-none
-                [background-image:linear-gradient(rgba(255,255,255,0.1)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.1)_1px,transparent_1px)]
-                [background-size:40px_40px]"
+                bg-[linear-gradient(rgba(255,255,255,0.1)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.1)_1px,transparent_1px)]
+                bg-size-[40px_40px]"
             />
 
             <Navbar onAnalyze={handleAnalyze} />
 
             <div className="max-w-6xl mx-auto px-6 py-10 relative z-10">
-
-                {/* Loading */}
                 {loading && (
                     <div className="flex flex-col items-center justify-center py-32 gap-4">
                         <div className="w-12 h-12 border-2 border-cyan-500/30 border-t-cyan-400 rounded-full animate-spin" />
@@ -79,15 +73,11 @@ function App() {
                         </p>
                     </div>
                 )}
-
-                {/* Error */}
                 {error && (
                     <div className="card-cyber border-red-900/50 p-5 text-center mt-8">
                         <p className="text-red-400 font-orbitron text-sm">{error}</p>
                     </div>
                 )}
-
-                {/* Landing page */}
                 {!data && !loading && (
                     <>
                         <Hero />
@@ -96,14 +86,11 @@ function App() {
                         <News />
                     </>
                 )}
-
-                {/* Dashboard */}
                 {data && (
                     <>
-                        {/* Back button */}
                         <button
                             onClick={() => setData(null)}
-                            className="flex items-center gap-2 text-xs text-cyan-500 hover:text-cyan-300 font-orbitron tracking-widest transition-colors mb-6"
+                            className="cursor-pointer flex items-center gap-2 text-xs text-cyan-500 hover:text-cyan-300 font-orbitron tracking-widest transition-colors mb-6"
                         >
                             ← BACK TO FEED
                         </button>
@@ -114,15 +101,12 @@ function App() {
                             initial="hidden"
                             animate="visible"
                         >
-                            {/* Price — full width */}
                             <motion.div className="md:col-span-2" variants={card}>
                                 <PriceCard
                                     data={data}
                                     onClick={() => openPanel("price")}
                                 />
                             </motion.div>
-
-                            {/* Sentiment + Topics */}
                             <motion.div variants={card}>
                                 <SentimentGauge
                                     data={data}
@@ -136,8 +120,6 @@ function App() {
                                     onClick={() => openPanel("topics")}
                                 />
                             </motion.div>
-
-                            {/* Hype + Risk */}
                             <motion.div variants={card}>
                                 <HypeMeter
                                     hypeLevel={data.hype_level}
@@ -153,8 +135,6 @@ function App() {
                                     onClick={() => openPanel("risk")}
                                 />
                             </motion.div>
-
-                            {/* Divergence — full width */}
                             <motion.div className="md:col-span-2" variants={card}>
                                 <DivergenceInsight
                                     comment={data.divergence_comment}
@@ -162,13 +142,9 @@ function App() {
                                     onClick={() => openPanel("divergence")}
                                 />
                             </motion.div>
-
-                            {/* Headlines — full width, no panel */}
                             <motion.div className="md:col-span-2" variants={card}>
                                 <HeadlineList headlines={data.headlines} />
                             </motion.div>
-
-                            {/* Disclaimer — full width */}
                             <motion.div
                                 className="md:col-span-2 bg-yellow-500/10 border border-yellow-500/30 rounded-xl p-5 text-center"
                                 variants={card}
@@ -184,8 +160,6 @@ function App() {
             </div>
 
             <Footer />
-
-            {/* Detail Panel — rendered outside the scroll container so it overlays everything */}
             <DetailPanel
                 type={panel.type}
                 data={panel.data}

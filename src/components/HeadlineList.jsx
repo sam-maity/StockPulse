@@ -33,7 +33,7 @@ export default function HeadlineList({ headlines }) {
         <div className="h-[1px] flex-1 ml-4 bg-gradient-to-r from-purple-500/40 to-transparent"></div>
       </div>
 
-      <div className="space-y-3">
+      <div className="space-y-3 cursor-pointer">
 
         {headlines.map((h, i) => (
           <div
@@ -45,8 +45,6 @@ export default function HeadlineList({ headlines }) {
               hover:scale-[1.01]
             `}
           >
-
-            {/* Clickable Headline */}
             <a
               href={h.url}
               target="_blank"
@@ -57,10 +55,9 @@ export default function HeadlineList({ headlines }) {
                 mb-3 
                 leading-relaxed 
                 block 
-                hover:text-purple-300 
                 transition
                 cursor-pointer
-                hover:underline
+                no-underline
                 decoration-purple-500/50
               "
             >
