@@ -13,13 +13,21 @@ export default function PriceChart({ history }) {
 
     const chart = createChart(chartRef.current, {
       height: 300,
+
       layout: {
         background: { color: "transparent" },
         textColor: "#9ca3af"
       },
+
       grid: {
         vertLines: { color: "rgba(255,255,255,0.05)" },
         horzLines: { color: "rgba(255,255,255,0.05)" }
+      },
+
+      timeScale: {
+        timeVisible: true,
+        secondsVisible: false,
+        rightBarStaysOnScroll: true
       }
     })
 

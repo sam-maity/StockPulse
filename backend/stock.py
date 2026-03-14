@@ -189,7 +189,9 @@ def get_headlines(ticker: str, limit: int = 15) -> list[dict]:
 def get_price_history(ticker: str):
 
     stock = yf.Ticker(ticker)
-    hist = stock.history(period="3mo")
+
+    # intraday data
+    hist = stock.history(period="5d", interval="5m")
 
     if hist.empty:
         return []
@@ -197,8 +199,11 @@ def get_price_history(ticker: str):
     data = []
 
     for date, row in hist.iterrows():
+
+        ts = int(date.timestamp())
+
         data.append({
-            "time": date.strftime("%Y-%m-%d"),
+            "time": ts,
             "value": float(row["Close"])
         })
 
