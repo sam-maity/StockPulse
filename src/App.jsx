@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import Navbar from './components/Navbar'
-import News from './components/news'
+import News from './components/News'
 import PriceCard from './components/PriceCard'
 import SentimentGauge from './components/SentimentGauge'
 import TopicBreakdown from './components/TopicBreakdown'
